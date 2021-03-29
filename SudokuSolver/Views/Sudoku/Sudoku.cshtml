@@ -1,0 +1,52 @@
+﻿@model SudokuSolver.ViewModels.SudokuViewModel
+@{
+    ViewBag.Title = "Sudoku Solver";
+}
+
+<div class="gameContainer">
+    @using (Html.BeginForm("Solve", "Sudoku"))
+    {
+        <div class="sudokuSidebar">
+            @*<label id="solveLabel">@Model.Alert</label>*@
+            <div class="clearfix"></div>
+            <div class="buttonContainer">
+
+                <button type="submit">Solve Logical</button>
+                <div class="clearfix"></div>
+                <button type="submit" formaction="Sudoku/SolveGuessing">Solve Guessing</button>
+                <div class="clearfix"></div>
+                <button type="submit" formaction="Sudoku/CreateSudoku">Create Random</button>
+                <div class="clearfix"></div>
+
+                <div class="slidecontainer">
+                    <label>Input Level</label>
+
+                    <div class="slidebar">
+                        <input type="range" onchange="ToggleUserControl(this.value)" min="0" max="2" value="0" step="1" class="slider" id="inputslider" />
+                    </div>
+                </div>
+                <div class="clearfix"></div>
+                <div class="dropdownlistcontainer">
+                    @Html.DropDownListFor(model => model.SelectedSudoku, new SelectList(Model.Sudokus, "SudokuId", "Name", Model.SelectedSudoku), null, new { @onchange = "SelectionChanged(this.value)" })
+                </div>
+                <div class="clearfix"></div>
+            </div>
+        </div>
+        <div class="sudokuMainContainer" id="board">
+            <table id="ThickBorder" border="1">
+                @for (int i = 0; i < 9; i++)
+                {
+                    <tr class="sudokuRow">
+                        @for (int j = 0; j < 9; j++)
+                        {
+                            <td>
+                                @Html.TextBoxFor(m => m.Sudoku.Cells[i][j], new { @class = "cell", @type = "number", @min = "0", @max = "9", @name = (i.ToString() + j.ToString()), @tag = Model.Sudoku.Cells[i][j], @onchange = "ValidateInput(this)", @readonly = "true" })
+                            </td>
+                        }
+                    </tr>
+                }
+            </table>
+            <p></p>
+        </div>
+    }
+</div>
