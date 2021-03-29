@@ -17,7 +17,7 @@ namespace SudokuSolver.Tests
             SudokuModel sudoku = SudokuData.GetMockData().FirstOrDefault(sudku => sudku.Name == "Logical");
             var solvedCells = solver.Solve(sudoku.Cells);
 
-            Assert.AreEqual(solvedCells, new int[][]
+            var fullySolved = new int[][]
                     {
                         new int[9] { 5, 3, 4, 6, 7, 8, 9, 1, 2 },
                         new int[9] { 6, 7, 2, 1, 9, 5, 3, 4, 8 },
@@ -28,7 +28,15 @@ namespace SudokuSolver.Tests
                         new int[9] { 9, 6, 1, 5, 3, 7, 2, 8, 4 },
                         new int[9] { 2, 8, 7, 4, 1, 9, 6, 3, 5 },
                         new int[9] { 3, 4, 5, 2, 8, 6, 1, 7, 9 }
-                    });
+                    };
+
+            for(int y = 0; y < 9; y++)
+            {
+                for (int x = 0; x < 9; x++)
+                {
+                    Assert.AreEqual(solvedCells[y][x], fullySolved[y][x], "Row: " + y + " | Column: " + x);
+                }
+            }
         }
 
         [TestMethod]
@@ -47,13 +55,10 @@ namespace SudokuSolver.Tests
                     new int[9] { 0, 0, 0, 0, 0, 0, 0, 0, 0 }
                 };
 
-            IList<int> row = solver.CheckAllowed(CheckType.Row, sudoku);
-            IList<int> column = solver.CheckAllowed(CheckType.Column, sudoku);
-            IList<int> box = solver.CheckAllowed(CheckType.Box, sudoku);
+            IList<int> output = new List<int>() { 1, 2, 3, 4, 5, 6, 7, 8, 9 };
+            output = solver.CheckAllowed(output, sudoku);
 
-            Assert.IsTrue(row.Count > 0, "Row count: " + row.Count);
-            Assert.IsTrue(column.Count > 0, "Column count: " + column.Count);
-            Assert.IsTrue(box.Count > 0, "Box count: " + box.Count);
+            Assert.IsTrue(output.Count > 0, "Output count: " + output.Count);
         }
 
         [TestMethod]
@@ -72,37 +77,10 @@ namespace SudokuSolver.Tests
                     new int[9] { 9, 0, 0, 0, 0, 0, 0, 0, 0 }
                 };
 
-            IList<int> row = solver.CheckAllowed(CheckType.Row, sudoku);
-            IList<int> column = solver.CheckAllowed(CheckType.Column, sudoku);
-            IList<int> box = solver.CheckAllowed(CheckType.Box, sudoku);
+            IList<int> output = new List<int>() { 1, 2, 3, 4, 5, 6, 7, 8, 9 };
+            output = solver.CheckAllowed(output, sudoku);
 
-            Assert.IsFalse(row.Count > 0, "Row count: " + row.Count);
-            Assert.IsFalse(column.Count > 0, "Column count: " + column.Count);
-            Assert.IsFalse(box.Count > 0, "Box count: " + box.Count);
-        }
-
-        [TestMethod]
-        public void TestCheckingComplexAll()
-        {
-            int[][] sudoku = new int[][]
-                {
-                    new int[9] { 1, 2, 3, 4, 5, 6, 7, 8, 9 },
-                    new int[9] { 4, 0, 6, 0, 0, 0, 0, 0, 0 },
-                    new int[9] { 7, 8, 9, 0, 0, 0, 0, 0, 0 },
-                    new int[9] { 2, 0, 0, 0, 0, 0, 0, 0, 0 },
-                    new int[9] { 3, 0, 0, 0, 0, 0, 0, 0, 0 },
-                    new int[9] { 5, 0, 0, 0, 0, 0, 0, 0, 0 },
-                    new int[9] { 6, 0, 0, 0, 0, 0, 0, 0, 0 },
-                    new int[9] { 8, 0, 0, 0, 0, 0, 0, 0, 0 },
-                    new int[9] { 9, 0, 0, 0, 0, 0, 0, 0, 0 }
-                };
-
-            IList<int> row = solver.CheckAllowed(CheckType.Row, sudoku);
-            IList<int> column = solver.CheckAllowed(CheckType.Column, sudoku);
-            IList<int> box = solver.CheckAllowed(CheckType.Box, sudoku);
-
-            Assert.IsTrue(row.Count == 0 && column.Count == 0 && box.Count == 1);
-            Assert.AreEqual(box[0], 5);
+            Assert.IsFalse(output.Count > 0, "Output count: " + output.Count);
         }
     }
 }
